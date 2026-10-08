@@ -1,0 +1,23 @@
+from rag.ingestion import load_documents, create_chunks
+from rag.vector_store import vector_store
+
+
+def main():
+
+    documents = load_documents("data")
+
+    print("Documents:", len(documents))
+
+    chunks = create_chunks(documents)
+
+    print("Chunks:", len(chunks))
+
+    print("Adding chunks to PostgreSQL...")
+
+    vector_store.add_documents(chunks)
+
+    print("Done!")
+
+
+if __name__ == "__main__":
+    main()
