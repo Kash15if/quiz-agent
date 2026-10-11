@@ -12,6 +12,11 @@ def main():
 
     print("Chunks:", len(chunks))
 
+    print("Clearing existing collection...")
+
+    vector_store.delete_collection()
+    vector_store.create_collection()
+
     print("Adding chunks to PostgreSQL...")
 
     vector_store.add_documents(chunks)

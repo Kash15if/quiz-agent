@@ -1,7 +1,7 @@
 from langgraph.graph import StateGraph, START, END
 
 from .state import QuizState
-from .tools import read_document
+from .tools import retrieve_context
 from .agent import (
     quiz_llm,
     answer_llm,
@@ -16,21 +16,39 @@ from .agent import (
 
 def generate_quiz(state: QuizState):
 
-    print("\nGenerating quiz from your document...\n")
+    document = ""
 
-    # Read Markdown document using our tool
-    document = read_document.invoke({})
+    while not document:
+
+        topic = input(
+            "\nEnter a topic to generate the quiz from: "
+        ).strip()
+
+        if not topic:
+            topic = "Java fundamentals"
+
+        print(
+            f"\nRetrieving content about '{topic}' "
+            "from the vector store...\n"
+        )
+
+        document = retrieve_context(topic)
+
+        if not document:
+            print("No relevant content found. Try another topic.")
+
+    print("Generating quiz from the retrieved content...\n")
 
     prompt = f"""
 {QUIZ_SYSTEM_PROMPT}
 
-Here is the document:
+Here is the content retrieved from the knowledge base:
 
----------------- DOCUMENT ----------------
+---------------- CONTEXT ----------------
 
 {document}
 
--------------- END DOCUMENT --------------
+-------------- END CONTEXT --------------
 
 Generate the quiz now.
 """

@@ -40,7 +40,7 @@ quiz_llm = llm.with_structured_output(Quiz)
 QUIZ_SYSTEM_PROMPT = """
 You are an AI quiz generator.
 
-Generate a quiz ONLY from the provided document.
+Generate a quiz ONLY from the provided context.
 
 Rules:
 
@@ -49,14 +49,14 @@ Rules:
 3. The options must be A, B, C and D.
 4. Exactly one option must be correct.
 5. The correct answer must be either A, B, C or D.
-6. Every question must be answerable using ONLY information from the document.
+6. Every question must be answerable using ONLY information from the context.
 7. Do not use outside knowledge.
 8. Do not invent facts.
-9. Questions should test understanding of the document.
+9. Questions should test understanding of the context.
 10. Try to vary the difficulty.
 11. Provide a short explanation for the correct answer.
 
-The document is the only source of truth.
+The context is the only source of truth.
 """
 
 

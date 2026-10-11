@@ -81,22 +81,35 @@ Answer:
 
 def main():
 
-    query = "How does inheritance work in Java?"
+    print("Ask a question about your documents. Type 'quit' to exit.\n")
 
-    print("Query:", query)
-    print("\nSearching...\n")
+    while True:
 
-    answer, results = answer_question(query, k=5)
+        query = input("Question: ").strip()
 
-    print("Answer:\n")
-    print(answer)
+        if not query:
+            continue
 
-    print("\n" + "=" * 80)
-    print("SOURCES")
-    print("=" * 80)
+        if query.lower() in ("quit", "exit", "q"):
+            print("Goodbye!")
+            break
 
-    for i, document in enumerate(results, start=1):
-        print(f"[{i}] {document.metadata}")
+        print("\nSearching...\n")
+
+        answer, results = answer_question(query, k=5)
+
+        print("Answer:\n")
+        print(answer)
+
+        if results:
+            print("\n" + "=" * 80)
+            print("SOURCES")
+            print("=" * 80)
+
+            for i, document in enumerate(results, start=1):
+                print(f"[{i}] {document.metadata}")
+
+        print()
 
 
 if __name__ == "__main__":
