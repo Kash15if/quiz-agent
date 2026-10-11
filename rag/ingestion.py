@@ -1,7 +1,22 @@
 from pathlib import Path
 
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_text_splitters import (
+    MarkdownHeaderTextSplitter,
+    RecursiveCharacterTextSplitter,
+)
 
+
+HEADERS_TO_SPLIT_ON = [
+    ("#", "h1"),
+    ("##", "h2"),
+    ("###", "h3"),
+    ("####", "h4"),
+]
+
+header_splitter = MarkdownHeaderTextSplitter(
+    headers_to_split_on=HEADERS_TO_SPLIT_ON,
+    strip_headers=False
+)
 
 splitter = RecursiveCharacterTextSplitter(
     chunk_size=800,
@@ -36,15 +51,23 @@ def create_chunks(documents):
 
     for document in documents:
 
-        chunks = splitter.create_documents(
-            [document["content"]],
-            metadatas=[{
-                "topic": document["topic"],
-                "filename": document["filename"],
-                "path": document["path"]
-            }]
-        )
+        base_metadata = {
+            "topic": document["topic"],
+            "filename": document["filename"],
+            "path": document["path"]
+        }
 
-        all_chunks.extend(chunks)
+        sections = header_splitter.split_text(document["content"])
+
+        for section in sections:
+
+            metadata = {**base_metadata, **section.metadata}
+
+            chunks = splitter.create_documents(
+                [section.page_content],
+                metadatas=[metadata]
+            )
+
+            all_chunks.extend(chunks)
 
     return all_chunks
